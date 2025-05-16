@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BookShare — Обмен книгами</title>
+  <script defer>
+    if (localStorage.getItem('theme') === 'dark') {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+    };
+  </script>
+</head>
+<body class="bg-gradient-to-br from-white to-blue-50 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-100 font-sans">
+  <header class="bg-white dark:bg-gray-900 shadow-md sticky top-0 z-50 p-4 flex justify-between items-center">
+    <h1 class="text-3xl font-extrabold text-blue-700 dark:text-blue-300 tracking-tight">📚 BookShare</h1>
+    <nav class="space-x-6 text-lg font-medium">
+      <a href="#catalog" class="text-blue-600 dark:text-blue-400 hover:underline">Каталог</a>
+      <a href="#add-book" class="text-blue-600 dark:text-blue-400 hover:underline">Добавить книгу</a>
+      <a href="#profile" class="text-blue-600 dark:text-blue-400 hover:underline">Профиль</a>
+      <button onclick="toggleTheme()" class="ml-4 px-3 py-1 rounded bg-gray-200 dark:bg-gray-700">🌓</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="bg-gradient-to-r from-green-400 to-blue-500 dark:from-green-700 dark:to-blue-800 py-24 text-center text-white">
+      <h2 class="text-5xl font-black mb-4 drop-shadow">Обменивайтесь книгами легко</h2>
+      <p class="text-xl mb-6">Найдите интересную книгу рядом с вами или поделитесь своей!</p>
+      <a href="#catalog" class="bg-white text-blue-700 px-8 py-3 rounded-full font-bold shadow hover:bg-blue-50 transition">Начать обмен</a>
+    </section>
+
+    <section class="p-10" id="auth">
+      <div class="max-w-md mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6">
+        <h3 class="text-2xl font-semibold mb-4 text-center text-blue-700 dark:text-blue-300">🔐 Вход или регистрация</h3>
+        <input type="text" id="username" placeholder="Ваше имя" class="w-full mb-4 p-2 border rounded">
+        <input type="file" id="avatar" class="w-full mb-4">
+        <button onclick="login()" class="w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Войти</button>
+      </div>
+    </section>
+
+    <section id="catalog" class="p-10">
+      <h3 class="text-3xl font-semibold mb-6 text-center text-blue-700 dark:text-blue-300">📚 Каталог книг</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        <div class="bg-white dark:bg-gray-900 shadow-lg rounded-xl overflow-hidden transform hover:scale-105 transition">
+          <img src="https://via.placeholder.com/300x200" alt="Книга" class="w-full h-48 object-cover">
+          <div class="p-4">
+            <h4 class="font-bold text-lg">"Тень горы" — Грегори Дэвид Робертс</h4>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Москва · Доступна</p>
+            <button class="mt-4 w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">Забронировать</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="add-book" class="bg-white dark:bg-gray-900 p-10 mt-6 shadow-xl rounded-xl max-w-4xl mx-auto">
+      <h3 class="text-3xl font-semibold mb-6 text-center text-green-700 dark:text-green-300">📖 Добавить книгу</h3>
+      <form class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <input type="text" placeholder="Название книги" class="border-gray-300 rounded-lg shadow-sm p-3">
+        <input type="text" placeholder="Автор" class="border-gray-300 rounded-lg shadow-sm p-3">
+        <input type="text" placeholder="Город" class="border-gray-300 rounded-lg shadow-sm p-3">
+        <input type="file" class="border-gray-300 rounded-lg shadow-sm p-3">
+        <textarea placeholder="Описание" rows="4" class="border-gray-300 rounded-lg shadow-sm p-3 md:col-span-2"></textarea>
+        <button type="submit" class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 md:col-span-2 transition">➕ Опубликовать</button>
+      </form>
+    </section>
+
+    <section id="profile" class="p-10 max-w-3xl mx-auto">
+      <h3 class="text-3xl font-semibold mb-4 text-center text-purple-700 dark:text-purple-300">👤 Ваш профиль</h3>
+      <div id="profile-data" class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 space-y-4 text-center">
+        <img id="avatar-img" src="" alt="Аватар" class="w-24 h-24 rounded-full mx-auto hidden">
+        <p><span class="font-medium">Имя:</span> <span id="display-name">Гость</span></p>
+        <p><span class="font-medium">Город:</span> Не указано</p>
+        <p><span class="font-medium">Мои книги:</span> 0 размещено, 0 в обмене</p>
+        <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">🚪 Выйти</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-blue-100 dark:bg-gray-900 text-center text-sm text-gray-700 dark:text-gray-400 py-4 mt-10 border-t">
+    &copy; 2025 BookShare. Все права защищены.
+  </footer>
+
+  <script>
+    function toggleTheme() {
+      const root = document.documentElement;
+      if (root.classList.contains('dark')) {
+        root.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      } else {
+        root.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+
+    function login() {
+      const name = document.getElementById('username').value;
+      const avatar = document.getElementById('avatar').files[0];
+      if (!name) return alert("Введите имя");
+
+      localStorage.setItem('userName', name);
+      if (avatar) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          localStorage.setItem('userAvatar', reader.result);
+          showProfile();
+        };
+        reader.readAsDataURL(avatar);
+      } else {
+        showProfile();
+      }
+    }
+
+    function showProfile() {
+      document.getElementById('auth').style.display = 'none';
+      document.getElementById('display-name').innerText = localStorage.getItem('userName');
+      const avatarData = localStorage.getItem('userAvatar');
+      if (avatarData) {
+        const img = document.getElementById('avatar-img');
+        img.src = avatarData;
+        img.classList.remove('hidden');
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('userName');
+      localStorage.removeItem('userAvatar');
+      location.reload();
+    }
+
+    if (localStorage.getItem('userName')) {
+      showProfile();
+    }
+  </script>
+</body>
+</html>
